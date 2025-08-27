@@ -1,0 +1,20 @@
+{
+  "name": "redpacket-dapp",
+  "private": true,
+  "workspaces": [
+    "contracts",
+    "web"
+  ],
+  "scripts": {
+    "install:all": "pnpm -r install",
+    "compile": "pnpm -C contracts run compile",
+    "compile+abi": "pnpm -C contracts run compile && node scripts/sync-abi.js",
+    "test:contracts": "pnpm -C contracts test",
+    "deploy:sepolia": "pnpm -C contracts run deploy:sepolia",
+    "sync:env": "node scripts/sync-env.js",
+    "sync:abi": "node scripts/sync-abi.js",
+    "dev:web": "pnpm -C web dev",
+    "build:web": "pnpm -C web build"
+  }
+}
+
