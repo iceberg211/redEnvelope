@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/hewei/Documents/web3/redEnvelope/contracts/src/RedPacket.sol": {
-      "lastModificationDate": 1756298675836,
-      "contentHash": "7f64d258f2cbe64ef0f2428b9c186ee9",
+      "lastModificationDate": 1756484662461,
+      "contentHash": "b52e6711dc21e06e0d618ac06048e31b",
       "sourceName": "src/RedPacket.sol",
       "solcConfig": {
         "version": "0.8.24",

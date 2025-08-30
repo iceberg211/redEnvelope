@@ -72,9 +72,14 @@ export interface RedPacketInterface extends Interface {
 }
 
 export namespace RedPacketClaimedEvent {
-  export type InputTuple = [user: AddressLike, amount: BigNumberish];
-  export type OutputTuple = [user: string, amount: bigint];
+  export type InputTuple = [
+    id: BigNumberish,
+    user: AddressLike,
+    amount: BigNumberish
+  ];
+  export type OutputTuple = [id: bigint, user: string, amount: bigint];
   export interface OutputObject {
+    id: bigint;
     user: string;
     amount: bigint;
   }
@@ -86,12 +91,19 @@ export namespace RedPacketClaimedEvent {
 
 export namespace RedPacketCreatedEvent {
   export type InputTuple = [
+    id: BigNumberish,
     sender: AddressLike,
     amount: BigNumberish,
     count: BigNumberish
   ];
-  export type OutputTuple = [sender: string, amount: bigint, count: bigint];
+  export type OutputTuple = [
+    id: bigint,
+    sender: string,
+    amount: bigint,
+    count: bigint
+  ];
   export interface OutputObject {
+    id: bigint;
     sender: string;
     amount: bigint;
     count: bigint;
@@ -246,7 +258,7 @@ export interface RedPacket extends BaseContract {
   >;
 
   filters: {
-    "RedPacketClaimed(address,uint256)": TypedContractEvent<
+    "RedPacketClaimed(uint256,address,uint256)": TypedContractEvent<
       RedPacketClaimedEvent.InputTuple,
       RedPacketClaimedEvent.OutputTuple,
       RedPacketClaimedEvent.OutputObject
@@ -257,7 +269,7 @@ export interface RedPacket extends BaseContract {
       RedPacketClaimedEvent.OutputObject
     >;
 
-    "RedPacketCreated(address,uint256,uint256)": TypedContractEvent<
+    "RedPacketCreated(uint256,address,uint256,uint256)": TypedContractEvent<
       RedPacketCreatedEvent.InputTuple,
       RedPacketCreatedEvent.OutputTuple,
       RedPacketCreatedEvent.OutputObject

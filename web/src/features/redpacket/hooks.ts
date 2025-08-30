@@ -16,7 +16,8 @@ export function useCreateRedPacket(chainId?: number) {
   const [lastCreatedId, setLastCreatedId] = useState<bigint | null>(null);
 
   const create = async (amountEth: string, count: number) => {
-    if (!publicClient || !walletClient || !address) throw new Error("not ready");
+    if (!publicClient || !walletClient || !address)
+      throw new Error("not ready");
     setLoading(true);
     try {
       // simulate to get expected id from return value
@@ -49,7 +50,8 @@ export function useClaimRedPacket(chainId?: number) {
   const [loading, setLoading] = useState(false);
 
   const claim = async (id: number | bigint) => {
-    if (!publicClient || !walletClient || !address) throw new Error("not ready");
+    if (!publicClient || !walletClient || !address)
+      throw new Error("not ready");
     setLoading(true);
     try {
       const hash = await walletClient.writeContract({
@@ -84,14 +86,21 @@ export function usePacketInfo(id?: number | bigint, chainId?: number) {
     (async () => {
       if (!publicClient || !address || id == null) return;
       try {
-        const [sender, total, remaining, remainingCount, finished] = (await publicClient.readContract({
-          address: address as `0x${string}`,
-          abi: (abiJson as any).abi,
-          functionName: "getPacket",
-          args: [BigInt(id)],
-        })) as any;
+        const [sender, total, remaining, remainingCount, finished] =
+          (await publicClient.readContract({
+            address: address as `0x${string}`,
+            abi: (abiJson as any).abi,
+            functionName: "getPacket",
+            args: [BigInt(id)],
+          })) as any;
         if (!cancelled)
-          setInfo({ sender, total, remaining, remainingCount, finished } as any);
+          setInfo({
+            sender,
+            total,
+            remaining,
+            remainingCount,
+            finished,
+          } as any);
       } catch (e) {
         if (!cancelled) setInfo(null);
       }
@@ -106,7 +115,9 @@ export function usePacketInfo(id?: number | bigint, chainId?: number) {
 
 export function useEvents(idFilter?: number | bigint, chainId?: number) {
   const { chainId: connectedChainId } = useAccount();
-  const publicClient = usePublicClient({ chainId: chainId ?? connectedChainId });
+  const publicClient = usePublicClient({
+    chainId: chainId ?? connectedChainId,
+  });
   const id = idFilter != null ? BigInt(idFilter) : undefined;
   const address = useContractAddress(chainId ?? connectedChainId);
   const [messages, setMessages] = useState<string[]>([]);
@@ -116,7 +127,7 @@ export function useEvents(idFilter?: number | bigint, chainId?: number) {
 
     const unwatchers: Array<() => void> = [];
 
-    // RedPacketCreated
+    // RedPacketCreated(id, sender, amount, count)
     unwatchers.push(
       publicClient.watchContractEvent({
         address: address as `0x${string}`,
@@ -124,17 +135,26 @@ export function useEvents(idFilter?: number | bigint, chainId?: number) {
         eventName: "RedPacketCreated",
         onLogs: (logs: any[]) => {
           logs.forEach((l) => {
-            const { sender, amount, count } = l.args as { sender: string; amount: bigint; count: bigint };
-            setMessages((m) => [
-              `红包已发出: 发送者 ${sender}, 金额 ${formatEther(amount)} ETH, 份数 ${count.toString()}`,
-              ...m,
-            ]);
+            const { id: evId, sender, amount, count } = l.args as {
+              id: bigint;
+              sender: string;
+              amount: bigint;
+              count: bigint;
+            };
+            if (id == null || evId === id) {
+              setMessages((m) => [
+                `红包创建 [ID ${evId.toString()}]: 发送者 ${sender}, 金额 ${formatEther(
+                  amount
+                )} ETH, 份数 ${count.toString()}`,
+                ...m,
+              ]);
+            }
           });
         },
       })
     );
 
-    // RedPacketClaimed
+    // RedPacketClaimed(id, user, amount)
     unwatchers.push(
       publicClient.watchContractEvent({
         address: address as `0x${string}`,
@@ -142,17 +162,19 @@ export function useEvents(idFilter?: number | bigint, chainId?: number) {
         eventName: "RedPacketClaimed",
         onLogs: (logs: any[]) => {
           logs.forEach((l) => {
-            const { user, amount } = l.args as { user: string; amount: bigint };
-            setMessages((m) => [
-              `有人抢到: ${formatEther(amount)} ETH (${user})`,
-              ...m,
-            ]);
+            const { id: evId, user, amount } = l.args as { id: bigint; user: string; amount: bigint };
+            if (id == null || evId === id) {
+              setMessages((m) => [
+                `抢到 [ID ${evId.toString()}]: ${formatEther(amount)} ETH (${user})`,
+                ...m,
+              ]);
+            }
           });
         },
       })
     );
 
-    // RedPacketFinished
+    // RedPacketFinished(id)
     unwatchers.push(
       publicClient.watchContractEvent({
         address: address as `0x${string}`,
@@ -175,4 +197,51 @@ export function useEvents(idFilter?: number | bigint, chainId?: number) {
   }, [publicClient, address, id]);
 
   return messages;
+}
+
+export function useHasClaimed(id?: number | bigint, chainId?: number, user?: string | undefined) {
+  const { chainId: connectedChainId } = useAccount();
+  const publicClient = usePublicClient({ chainId: chainId ?? connectedChainId });
+  const address = useContractAddress(chainId ?? connectedChainId);
+  const [has, setHas] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!publicClient || !address || id == null || !user) { setHas(null); return; }
+      try {
+        const result = await publicClient.readContract({
+          address: address as `0x${string}`,
+          abi: (abiJson as any).abi,
+          functionName: "hasClaimed",
+          args: [BigInt(id), user as `0x${string}`],
+        });
+        if (!cancelled) setHas(Boolean(result));
+      } catch (e) {
+        if (!cancelled) setHas(null);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [publicClient, address, id, user]);
+
+  // react to on-chain Claim events to update immediately without manual refresh
+  useEffect(() => {
+    if (!publicClient || !address || id == null || !user) return;
+    const unwatch = publicClient.watchContractEvent({
+      address: address as `0x${string}`,
+      abi: (abiJson as any).abi,
+      eventName: "RedPacketClaimed",
+      onLogs: (logs: any[]) => {
+        logs.forEach((l) => {
+          const { id: evId, user: evUser } = l.args as { id: bigint; user: `0x${string}` };
+          if (evId === BigInt(id) && evUser?.toLowerCase() === (user as string).toLowerCase()) {
+            setHas(true);
+          }
+        });
+      },
+    });
+    return () => { unwatch?.(); };
+  }, [publicClient, address, id, user]);
+
+  return has;
 }

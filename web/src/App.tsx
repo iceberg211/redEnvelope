@@ -6,9 +6,9 @@ import { Container, Grid } from "@mantine/core";
 
 function App() {
   return (
-    <Container size="md" py="md">
+    <Container size="lg" py="md">
       <WalletBar />
-      <Grid mt="md">
+      <Grid mt="md" gutter="lg">
         <Grid.Col span={{ base: 12, sm: 6 }}>
           <SendPanel />
         </Grid.Col>

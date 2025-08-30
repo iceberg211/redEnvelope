@@ -6,24 +6,37 @@ pragma solidity ^0.8.24;
 ///         Participants can claim once and receive a pseudo-random share. For demo/testing only.
 contract RedPacket {
     struct Packet {
+        // 发送者
         address sender;
+        // 总共多少个
         uint256 total;
+        // 红包里剩余的金额
         uint256 remaining;
+        // 剩余多少个
         uint256 remainingCount;
         bool finished;
+        // 记录谁已经领过
         mapping(address => bool) claimed;
     }
 
     // auto-increment id => Packet
     uint256 public nextId = 1;
+
+    // 私有的红包
     mapping(uint256 => Packet) private packets;
 
-    event RedPacketCreated(address indexed sender, uint256 amount, uint256 count);
-    event RedPacketClaimed(address indexed user, uint256 amount);
-    event RedPacketFinished(uint256 id);
+    uint256 private locked = 1;
+
+    event RedPacketCreated(
+        uint256 indexed id,
+        address indexed sender,
+        uint256 amount,
+        uint256 count
+    );
+    event RedPacketClaimed(uint256 indexed id, address indexed user, uint256 amount);
+    event RedPacketFinished(uint256 indexed id);
 
     // minimal reentrancy guard
-    uint256 private locked = 1;
     modifier nonReentrant() {
         require(locked == 1, "REENTRANT");
         locked = 2;
@@ -34,7 +47,9 @@ contract RedPacket {
     /// @notice Create a new red packet
     /// @param count Number of claims available
     /// @return id The created packet id
-    function createRedPacket(uint256 count) external payable returns (uint256 id) {
+    function createRedPacket(
+        uint256 count
+    ) external payable returns (uint256 id) {
         require(count > 0, "count=0");
         require(msg.value > 0, "no value");
         require(msg.value >= count, "value < count (min 1 wei each)");
@@ -47,7 +62,7 @@ contract RedPacket {
         p.remainingCount = count;
         p.finished = false;
 
-        emit RedPacketCreated(msg.sender, msg.value, count);
+        emit RedPacketCreated(id, msg.sender, msg.value, count);
     }
 
     /// @notice Claim from a packet
@@ -67,7 +82,13 @@ contract RedPacket {
             // pseudo-random for demo purposes only
             uint256 rand = uint256(
                 keccak256(
-                    abi.encodePacked(block.timestamp, block.prevrandao, msg.sender, p.remaining, p.remainingCount)
+                    abi.encodePacked(
+                        block.timestamp,
+                        block.prevrandao,
+                        msg.sender,
+                        p.remaining,
+                        p.remainingCount
+                    )
                 )
             );
             amount = (rand % max) + 1; // [1, max]
@@ -82,7 +103,7 @@ contract RedPacket {
         (bool ok, ) = msg.sender.call{value: amount}("");
         require(ok, "transfer failed");
 
-        emit RedPacketClaimed(msg.sender, amount);
+        emit RedPacketClaimed(id, msg.sender, amount);
 
         if (p.remainingCount == 0) {
             p.finished = true;
@@ -91,7 +112,9 @@ contract RedPacket {
     }
 
     /// @notice Get packet info for UI
-    function getPacket(uint256 id)
+    function getPacket(
+        uint256 id
+    )
         external
         view
         returns (
@@ -113,4 +136,3 @@ contract RedPacket {
         return p.claimed[user];
     }
 }
-

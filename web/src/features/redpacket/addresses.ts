@@ -1,5 +1,5 @@
 export const addresses: Record<number, string> = {
   // sepolia
-  11155111: "0x8f29Ea74667e3766D82698662d8FF170e148A1F6", // TODO: update after deploy
+  11155111: "0x5125d6fdCDb86Aeb0e2CBcE71EEf90a4ea7bAd5c", // TODO: update after deploy
 };
 
