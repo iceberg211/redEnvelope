@@ -81,6 +81,10 @@ export default tseslint.config([
       globals: {
         ...globals.jest,
       },
+      // 关闭测试文件的“类型感知”解析，避免 tsconfig.app.json 不包含测试导致的报错
+      parserOptions: {
+        project: null,
+      },
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',

@@ -5,7 +5,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/setupTests.ts'],
   
   // 模块名映射
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': 'jest-transform-stub',
@@ -16,10 +16,10 @@ module.exports = {
 
   // 测试文件匹配模式
   testMatch: [
-    '<rootDir>/test/unit/**/*.(ts|tsx|js|jsx)',
-    '<rootDir>/test/unit/**/*.(test|spec).(ts|tsx|js|jsx)',
-    '<rootDir>/src/**/__tests__/**/*.(ts|tsx|js|jsx)',
-    '<rootDir>/src/**/*.(test|spec).(ts|tsx|js|jsx)',
+    '<rootDir>/test/unit/**/*.{ts,tsx,js,jsx}',
+    '<rootDir>/test/unit/**/*.{test,spec}.{ts,tsx,js,jsx}',
+    '<rootDir>/src/**/__tests__/**/*.{ts,tsx,js,jsx}',
+    '<rootDir>/src/**/*.{test,spec}.{ts,tsx,js,jsx}',
   ],
 
   // 覆盖率收集

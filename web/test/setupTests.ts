@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { TextEncoder, TextDecoder } from 'util';
 
 // 模拟 window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -58,6 +59,18 @@ if (!global.crypto) {
 }
 if (!global.crypto.randomUUID) {
   global.crypto.randomUUID = () => 'test-uuid';
+}
+
+// 提供 TextEncoder/TextDecoder（viem 等依赖需要）
+// @ts-ignore
+if (!(global as any).TextEncoder) {
+  // @ts-ignore
+  (global as any).TextEncoder = TextEncoder;
+}
+// @ts-ignore
+if (!(global as any).TextDecoder) {
+  // @ts-ignore
+  (global as any).TextDecoder = TextDecoder as unknown as typeof globalThis.TextDecoder;
 }
 
 // 抑制 console.error 对于已知的测试警告
