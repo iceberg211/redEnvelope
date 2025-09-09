@@ -110,4 +110,10 @@
       "last 1 safari version"
     ]
   }
+  ,
+  "sideEffects": [
+    "*.css",
+    "*.scss",
+    "@rainbow-me/rainbowkit/styles.css"
+  ]
 }

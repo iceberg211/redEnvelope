@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { DefinePlugin, ProvidePlugin } = require('webpack');
-const Dotenv = require('dotenv-webpack');
+const { ProvidePlugin } = require('webpack');
 
 module.exports = {
   entry: path.resolve(__dirname, '../../src/main.tsx'),
@@ -12,23 +11,23 @@ module.exports = {
       '@': path.resolve(__dirname, '../../src'),
     },
     fallback: {
-      "crypto": require.resolve("crypto-browserify"),
-      "stream": require.resolve("stream-browserify"),
-      "assert": require.resolve("assert"),
-      "http": require.resolve("stream-http"),
-      "https": require.resolve("https-browserify"),
-      "os": require.resolve("os-browserify"),
-      "url": require.resolve("url"),
-      "zlib": require.resolve("browserify-zlib"),
-      "buffer": require.resolve("buffer"),
-      "process": require.resolve("process/browser.js"),
-      "fs": false,
-      "net": false,
-      "tls": false,
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      assert: require.resolve('assert'),
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      os: require.resolve('os-browserify'),
+      url: require.resolve('url'),
+      zlib: require.resolve('browserify-zlib'),
+      buffer: require.resolve('buffer'),
+      process: require.resolve('process/browser.js'),
+      fs: false,
+      net: false,
+      tls: false,
     },
     extensionAlias: {
-      ".js": [".js", ".ts", ".tsx"],
-      ".jsx": [".jsx", ".tsx"],
+      '.js': ['.js', '.ts', '.tsx'],
+      '.jsx': ['.jsx', '.tsx'],
     },
     fullySpecified: false, // 允许不完全指定的模块导入
   },

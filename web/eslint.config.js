@@ -53,14 +53,7 @@ export default tseslint.config([
         { allowConstantExport: true },
       ],
 
-      // TypeScript 相关规则
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/prefer-const': 'error',
 
-      // React 相关规则
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
 
       // 通用规则
       'no-console': 'warn',

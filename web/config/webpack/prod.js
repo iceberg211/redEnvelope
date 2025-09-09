@@ -23,38 +23,42 @@ module.exports = merge(baseConfig, {
   module: {
     rules: [
       // JS/TS 规则已下沉到 base
-      // 生产环境的 CSS 处理，使用 MiniCssExtractPlugin
+      // 全局 CSS（包含 node_modules）
       {
         test: /\.css$/i,
+        exclude: /\.module\.css$/i,
         use: [
           MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              modules: {
-                auto: /\.module\.(css|scss|sass)$/i,
-                localIdentName: '[hash:base64:8]', // 生产环境短类名
-              },
-              importLoaders: 1,
-            },
-          },
+          { loader: 'css-loader', options: { modules: false, importLoaders: 1 } },
           'postcss-loader',
         ],
       },
+      // CSS Modules
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.module\.css$/i,
         use: [
           MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              modules: {
-                auto: /\.module\.(css|scss|sass)$/i,
-                localIdentName: '[hash:base64:8]', // 生产环境短类名
-              },
-              importLoaders: 2,
-            },
-          },
+          { loader: 'css-loader', options: { modules: { localIdentName: '[hash:base64:8]' }, importLoaders: 1 } },
+          'postcss-loader',
+        ],
+      },
+      // 全局 SASS/SCSS（包含 node_modules）
+      {
+        test: /\.s[ac]ss$/i,
+        exclude: /\.module\.s[ac]ss$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader', options: { modules: false, importLoaders: 2 } },
+          'postcss-loader',
+          'sass-loader',
+        ],
+      },
+      // SASS/SCSS Modules
+      {
+        test: /\.module\.s[ac]ss$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader', options: { modules: { localIdentName: '[hash:base64:8]' }, importLoaders: 2 } },
           'postcss-loader',
           'sass-loader',
         ],
