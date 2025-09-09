@@ -1,12 +1,13 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { DefinePlugin, ProvidePlugin } = require('webpack');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: path.resolve(__dirname, '../../src/main.tsx'),
 
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    extensions: ['.mjs', '.tsx', '.ts', '.js', '.jsx', '.json'],
     alias: {
       '@': path.resolve(__dirname, '../../src'),
     },
@@ -20,12 +21,51 @@ module.exports = {
       "url": require.resolve("url"),
       "zlib": require.resolve("browserify-zlib"),
       "buffer": require.resolve("buffer"),
-      "process": require.resolve("process/browser"),
+      "process": require.resolve("process/browser.js"),
+      "fs": false,
+      "net": false,
+      "tls": false,
     },
+    extensionAlias: {
+      ".js": [".js", ".ts", ".tsx"],
+      ".jsx": [".jsx", ".tsx"],
+    },
+    fullySpecified: false, // 允许不完全指定的模块导入
   },
 
   module: {
     rules: [
+      // 通用 JS/TS 处理（SWC），按 NODE_ENV 调整 React 开发特性
+      {
+        test: /\.(ts|tsx|js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'swc-loader',
+          options: {
+            jsc: {
+              parser: {
+                syntax: 'typescript',
+                tsx: true,
+                decorators: false,
+                dynamicImport: true,
+              },
+              target: 'es2022',
+              loose: false,
+              externalHelpers: false,
+              keepClassNames: process.env.NODE_ENV !== 'production',
+              transform: {
+                react: {
+                  runtime: 'automatic',
+                  development: process.env.NODE_ENV !== 'production',
+                  refresh: process.env.NODE_ENV !== 'production',
+                },
+              },
+            },
+            module: { type: 'es6' },
+            sourceMaps: true,
+          },
+        },
+      },
       {
         test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
         type: 'asset/resource',
@@ -46,22 +86,13 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../../index.html'),
+      favicon: path.resolve(__dirname, '../../public/vite.svg'),
       inject: 'body',
       scriptLoading: 'defer',
     }),
-    new DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-      // 只传递以 VITE_ 开头的环境变量（保持兼容性）
-      ...Object.keys(process.env)
-        .filter(key => key.startsWith('VITE_'))
-        .reduce((env, key) => {
-          env[`process.env.${key}`] = JSON.stringify(process.env[key]);
-          return env;
-        }, {}),
-    }),
     new ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
-      process: 'process/browser',
+      process: 'process/browser.js',
     }),
   ],
 
@@ -106,5 +137,9 @@ module.exports = {
         },
       },
     },
+    moduleIds: 'deterministic',
+    chunkIds: 'deterministic',
   },
+
+  stats: 'errors-warnings',
 };

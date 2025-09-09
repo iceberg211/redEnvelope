@@ -1,14 +1,18 @@
 const { merge } = require('webpack-merge');
 const baseConfig = require('./base');
+const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CompressionPlugin = require('compression-webpack-plugin');
+const WebpackBar = require('webpackbar');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = merge(baseConfig, {
   mode: 'production',
-  devtool: 'source-map',
+  devtool: 'hidden-source-map',
   
   output: {
     filename: 'js/[name].[contenthash:8].js',
@@ -18,46 +22,7 @@ module.exports = merge(baseConfig, {
 
   module: {
     rules: [
-      {
-        test: /\.(ts|tsx|js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: '@swc/loader',
-          options: {
-            jsc: {
-              parser: {
-                syntax: 'typescript',
-                tsx: true,
-                decorators: false,
-                dynamicImport: true,
-              },
-              target: 'es2022',
-              loose: false,
-              externalHelpers: false,
-              keepClassNames: false, // 生产环境不保持类名
-              transform: {
-                react: {
-                  runtime: 'automatic',
-                  development: false, // 生产模式
-                  refresh: false,
-                },
-              },
-              minify: {
-                compress: {
-                  drop_console: false, // 可以根据需要设置为 true
-                  drop_debugger: true,
-                  pure_funcs: ['console.debug'],
-                },
-                mangle: true,
-              },
-            },
-            module: {
-              type: 'es6',
-            },
-            sourceMaps: true,
-          },
-        },
-      },
+      // JS/TS 规则已下沉到 base
       // 生产环境的 CSS 处理，使用 MiniCssExtractPlugin
       {
         test: /\.css$/i,
@@ -67,7 +32,7 @@ module.exports = merge(baseConfig, {
             loader: 'css-loader',
             options: {
               modules: {
-                auto: true,
+                auto: /\.module\.(css|scss|sass)$/i,
                 localIdentName: '[hash:base64:8]', // 生产环境短类名
               },
               importLoaders: 1,
@@ -84,7 +49,7 @@ module.exports = merge(baseConfig, {
             loader: 'css-loader',
             options: {
               modules: {
-                auto: true,
+                auto: /\.module\.(css|scss|sass)$/i,
                 localIdentName: '[hash:base64:8]', // 生产环境短类名
               },
               importLoaders: 2,
@@ -98,6 +63,31 @@ module.exports = merge(baseConfig, {
   },
 
   plugins: [
+    new WebpackBar({
+      name: '📦 生产构建',
+      color: '#f56565',
+      profile: true,
+      basic: false,
+      fancy: true,
+      reporter: [
+        'fancy',
+        'profile',
+      ],
+    }),
+    new FriendlyErrorsWebpackPlugin({
+      compilationSuccessInfo: {
+        messages: [
+          '🎉 生产构建完成！',
+          '📁 输出目录: dist/',
+          '🚀 准备部署...',
+        ],
+        notes: [
+          '💡 提示: 使用 pnpm preview 预览构建结果',
+          '📊 使用 pnpm build:analyze 分析包大小',
+        ]
+      },
+      clearConsole: false, // 生产构建时不清空控制台
+    }),
     new MiniCssExtractPlugin({
       filename: 'css/[name].[contenthash:8].css',
       chunkFilename: 'css/[name].[contenthash:8].chunk.css',
@@ -109,6 +99,23 @@ module.exports = merge(baseConfig, {
       test: /\.(js|css|html|svg)$/,
       threshold: 8192,
       minRatio: 0.8,
+    }),
+    new CompressionPlugin({
+      filename: '[path][base].br',
+      algorithm: 'brotliCompress',
+      test: /\.(js|css|html|svg)$/,
+      compressionOptions: { level: 11 },
+      threshold: 8192,
+      minRatio: 0.8,
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, '../../public'),
+          to: '.',
+          noErrorOnMissing: true,
+        },
+      ],
     }),
     // 可选：bundle 分析器
     ...(process.env.ANALYZE ? [new BundleAnalyzerPlugin({
@@ -123,6 +130,7 @@ module.exports = merge(baseConfig, {
     minimize: true,
     minimizer: [
       new TerserPlugin({
+        minify: TerserPlugin.swcMinify,
         terserOptions: {
           compress: {
             drop_console: false, // 保留 console，在需要时可以设为 true
@@ -168,4 +176,6 @@ module.exports = merge(baseConfig, {
     maxEntrypointSize: 512000,
     maxAssetSize: 512000,
   },
+
+  stats: 'errors-warnings', // 使用 FriendlyErrorsWebpackPlugin 处理成功信息
 });

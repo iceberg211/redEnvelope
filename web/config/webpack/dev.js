@@ -1,6 +1,10 @@
 const { merge } = require('webpack-merge');
 const baseConfig = require('./base');
 const path = require('path');
+const WebpackBar = require('webpackbar');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 module.exports = merge(baseConfig, {
   mode: 'development',
@@ -13,38 +17,7 @@ module.exports = merge(baseConfig, {
 
   module: {
     rules: [
-      {
-        test: /\.(ts|tsx|js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: '@swc/loader',
-          options: {
-            jsc: {
-              parser: {
-                syntax: 'typescript',
-                tsx: true,
-                decorators: false,
-                dynamicImport: true,
-              },
-              target: 'es2022',
-              loose: false,
-              externalHelpers: false,
-              keepClassNames: true, // 开发环境保持类名
-              transform: {
-                react: {
-                  runtime: 'automatic',
-                  development: true, // 开发模式
-                  refresh: true, // 支持 React Fast Refresh
-                },
-              },
-            },
-            module: {
-              type: 'es6',
-            },
-            sourceMaps: true,
-          },
-        },
-      },
+      // JS/TS 规则已下沉到 base
       {
         test: /\.css$/i,
         use: [
@@ -53,7 +26,7 @@ module.exports = merge(baseConfig, {
             loader: 'css-loader',
             options: {
               modules: {
-                auto: true,
+                auto: /\.module\.(css|scss|sass)$/i,
                 localIdentName: '[name]__[local]--[hash:base64:5]',
               },
               importLoaders: 1,
@@ -70,7 +43,7 @@ module.exports = merge(baseConfig, {
             loader: 'css-loader',
             options: {
               modules: {
-                auto: true,
+                auto: /\.module\.(css|scss|sass)$/i,
                 localIdentName: '[name]__[local]--[hash:base64:5]',
               },
               importLoaders: 2,
@@ -83,6 +56,36 @@ module.exports = merge(baseConfig, {
     ],
   },
 
+  plugins: [
+    new WebpackBar({
+      name: '🚀 开发环境',
+      color: '#61dafb',
+      profile: true,
+      basic: false,
+      fancy: true,
+      reporter: [
+        'fancy',
+        'profile',
+      ],
+    }),
+    new FriendlyErrorsWebpackPlugin({
+      compilationSuccessInfo: {
+        messages: [
+          '🎉 应用已启动！',
+          '🌐 本地地址: http://localhost:5173',
+          '📱 网络地址: http://0.0.0.0:5173',
+        ],
+        notes: [
+          '💡 提示: 按 Ctrl+C 停止开发服务器',
+          '🔥 热重载已启用，修改代码自动刷新',
+        ]
+      },
+      clearConsole: true,
+    }),
+    new CaseSensitivePathsPlugin(), // 确保路径大小写一致
+    new ReactRefreshWebpackPlugin(),
+  ],
+
   devServer: {
     static: {
       directory: path.resolve(__dirname, '../../public'),
@@ -94,14 +97,16 @@ module.exports = merge(baseConfig, {
     liveReload: true,
     compress: true,
     port: 5173, // 保持与 Vite 相同的端口
-    host: 'localhost',
+    host: '0.0.0.0',
     allowedHosts: 'all',
     client: {
       overlay: {
         errors: true,
         warnings: false,
+        runtimeErrors: true,
       },
       progress: true,
+      logging: 'warn',
     },
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -110,23 +115,7 @@ module.exports = merge(baseConfig, {
     },
   },
 
-  stats: {
-    colors: true,
-    hash: false,
-    version: false,
-    timings: true,
-    assets: false,
-    chunks: false,
-    modules: false,
-    reasons: false,
-    children: false,
-    source: false,
-    errors: true,
-    errorDetails: true,
-    warnings: true,
-    publicPath: false,
-  },
-
+  // 使用 FriendlyErrorsWebpackPlugin 处理输出，这里仅显示错误和警告（已在 base 设置）
   optimization: {
     ...baseConfig.optimization,
     runtimeChunk: 'single', // 开发环境单独的 runtime chunk

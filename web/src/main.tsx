@@ -29,3 +29,15 @@ createRoot(document.getElementById('root')!).render(
     </WagmiProvider>
   </StrictMode>,
 )
+
+// 兼容 Webpack 5 的 ESM HMR 与旧式 HMR API
+// React Refresh 已在 webpack 插件中启用，此处是补充手动接入（可选）。
+// @ts-ignore
+if ((import.meta as any)?.webpackHot) {
+  // @ts-ignore
+  (import.meta as any).webpackHot.accept();
+// @ts-ignore
+} else if (typeof module !== 'undefined' && (module as any).hot) {
+  // @ts-ignore
+  (module as any).hot.accept();
+}

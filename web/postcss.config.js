@@ -1,7 +1,7 @@
 module.exports = {
   plugins: [
     require('postcss-import'),
-    require('tailwindcss/nesting'), // 如果使用 Tailwind CSS
+    require('postcss-nested'), // 使用 postcss-nested 替代 tailwindcss/nesting
     require('autoprefixer'),
     require('postcss-preset-env')({
       stage: 1,
