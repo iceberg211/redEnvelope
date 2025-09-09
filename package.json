@@ -14,7 +14,23 @@
     "sync:env": "node scripts/sync-env.js",
     "sync:abi": "node scripts/sync-abi.js",
     "dev:web": "pnpm -C web dev",
-    "build:web": "pnpm -C web build"
+    "build:web": "pnpm -C web build",
+    "build:web:analyze": "pnpm -C web build:analyze",
+    "preview:web": "pnpm -C web preview",
+    "lint:web": "pnpm -C web lint",
+    "lint:web:fix": "pnpm -C web lint:fix",
+    "format:web": "pnpm -C web format",
+    "format:web:check": "pnpm -C web format:check",
+    "type-check:web": "pnpm -C web type-check",
+    "test:web": "pnpm -C web test",
+    "test:web:watch": "pnpm -C web test:watch",
+    "test:web:coverage": "pnpm -C web test:coverage",
+    "test:e2e": "pnpm -C web test:e2e",
+    "test:e2e:ui": "pnpm -C web test:e2e:ui",
+    "test:e2e:debug": "pnpm -C web test:e2e:debug",
+    "test:all": "pnpm test:contracts && pnpm test:web",
+    "clean:web": "pnpm -C web clean",
+    "clean:all": "pnpm clean:web && pnpm -C contracts clean"
   }
 }
 
