@@ -12,7 +12,8 @@
     "test:contracts": "pnpm -C contracts test",
     "deploy:sepolia": "pnpm -C contracts run deploy:sepolia",
     "sync:env": "node scripts/sync-env.js",
-    "sync:abi": "node scripts/sync-abi.js"
+    "sync:abi": "node scripts/sync-abi.js",
+    "ai-review": "node scripts/simple-ai-review.js"
   }
 }
 

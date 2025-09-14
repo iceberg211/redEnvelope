@@ -97,6 +97,11 @@ pnpm clean:web            # 清理前端构建产物
 pnpm clean:all            # 清理所有构建产物
 ```
 
+### AI 代码审查命令
+```bash
+pnpm ai-review            # 审查当前变更的文件
+```
+
 ## 开发工具集成
 
 ### Git Hooks (Husky)
@@ -134,6 +139,12 @@ pnpm clean:all            # 清理所有构建产物
 - `scripts/sync-abi.js` - 从合约复制编译后的 ABI 到前端
 - `scripts/sync-env.js` - 将根目录 `.env` 分发到各工作空间 `.env` 文件
 - 部署脚本自动更新前端合约地址
+
+### AI 代码审查
+- **工具脚本**: `scripts/simple-ai-review.js` - 调用 AI 接口进行代码审查
+- **API 地址**: `https://weihe.life/aichat/graphql`
+- **使用方式**: `pnpm ai-review` 手动触发审查
+- **CI 集成**: GitHub Actions 在 PR 时自动运行
 
 ## 测试
 
