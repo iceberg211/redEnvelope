@@ -18,13 +18,14 @@
       [
         "html",
         {
-          "outputFolder": "test-results/playwright-report"
+          "outputFolder": "playwright-report",
+          "open": "never"
         }
       ],
       [
         "json",
         {
-          "outputFile": "test-results/playwright-results.json"
+          "outputFile": "test-results/results.json"
         }
       ],
       [
@@ -39,7 +40,7 @@
     "quiet": false,
     "projects": [
       {
-        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results",
+        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results/artifacts",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -55,7 +56,7 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results",
+        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results/artifacts",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -71,7 +72,7 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results",
+        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results/artifacts",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -87,7 +88,7 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results",
+        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results/artifacts",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -103,7 +104,7 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results",
+        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results/artifacts",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -119,7 +120,7 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results",
+        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results/artifacts",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -135,7 +136,7 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results",
+        "outputDir": "/Users/hewei/Documents/web3/redEnvelope/web/test-results/artifacts",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -199,7 +200,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:16.374Z",
+                  "startTime": "2025-09-14T14:39:44.520Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -228,7 +229,7 @@
                   "workerIndex": 2,
                   "parallelIndex": 2,
                   "status": "failed",
-                  "duration": 5,
+                  "duration": 2,
                   "error": {
                     "message": "Error: browserType.launch: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/firefox-1490/firefox/Nightly.app/Contents/MacOS/firefox\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
                     "stack": "Error: browserType.launch: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/firefox-1490/firefox/Nightly.app/Contents/MacOS/firefox\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
@@ -241,7 +242,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:16.377Z",
+                  "startTime": "2025-09-14T14:39:44.517Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -267,10 +268,10 @@
               "projectName": "webkit",
               "results": [
                 {
-                  "workerIndex": 4,
+                  "workerIndex": 5,
                   "parallelIndex": 1,
                   "status": "failed",
-                  "duration": 4,
+                  "duration": 6,
                   "error": {
                     "message": "Error: browserType.launch: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/webkit-2203/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
                     "stack": "Error: browserType.launch: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/webkit-2203/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
@@ -283,7 +284,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:16.748Z",
+                  "startTime": "2025-09-14T14:39:44.971Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -312,7 +313,7 @@
                   "workerIndex": 6,
                   "parallelIndex": 0,
                   "status": "failed",
-                  "duration": 1,
+                  "duration": 2,
                   "error": {
                     "message": "Error: browserType.launch: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/chromium_headless_shell-1187/chrome-mac/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
                     "stack": "Error: browserType.launch: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/chromium_headless_shell-1187/chrome-mac/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
@@ -325,7 +326,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:16.751Z",
+                  "startTime": "2025-09-14T14:39:44.975Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -351,8 +352,8 @@
               "projectName": "Mobile Safari",
               "results": [
                 {
-                  "workerIndex": 8,
-                  "parallelIndex": 3,
+                  "workerIndex": 9,
+                  "parallelIndex": 1,
                   "status": "failed",
                   "duration": 2,
                   "error": {
@@ -367,7 +368,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:17.109Z",
+                  "startTime": "2025-09-14T14:39:45.374Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -394,9 +395,9 @@
               "results": [
                 {
                   "workerIndex": 10,
-                  "parallelIndex": 1,
+                  "parallelIndex": 0,
                   "status": "failed",
-                  "duration": 325,
+                  "duration": 937,
                   "error": {
                     "message": "Error: browserContext.newPage: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
                     "stack": "Error: browserContext.newPage: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
@@ -409,7 +410,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:17.103Z",
+                  "startTime": "2025-09-14T14:39:45.404Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -436,9 +437,9 @@
               "results": [
                 {
                   "workerIndex": 12,
-                  "parallelIndex": 0,
+                  "parallelIndex": 1,
                   "status": "failed",
-                  "duration": 391,
+                  "duration": 1104,
                   "error": {
                     "message": "Error: browserContext.newPage: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
                     "stack": "Error: browserContext.newPage: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
@@ -451,7 +452,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:17.410Z",
+                  "startTime": "2025-09-14T14:39:45.828Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -501,7 +502,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:16.370Z",
+                  "startTime": "2025-09-14T14:39:44.498Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -543,7 +544,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:16.374Z",
+                  "startTime": "2025-09-14T14:39:44.503Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -569,10 +570,10 @@
               "projectName": "webkit",
               "results": [
                 {
-                  "workerIndex": 5,
+                  "workerIndex": 4,
                   "parallelIndex": 3,
                   "status": "failed",
-                  "duration": 1,
+                  "duration": 2,
                   "error": {
                     "message": "Error: browserType.launch: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/webkit-2203/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
                     "stack": "Error: browserType.launch: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/webkit-2203/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
@@ -585,7 +586,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:16.754Z",
+                  "startTime": "2025-09-14T14:39:44.968Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -627,7 +628,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:16.752Z",
+                  "startTime": "2025-09-14T14:39:45.011Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -653,8 +654,8 @@
               "projectName": "Mobile Safari",
               "results": [
                 {
-                  "workerIndex": 9,
-                  "parallelIndex": 0,
+                  "workerIndex": 8,
+                  "parallelIndex": 3,
                   "status": "failed",
                   "duration": 2,
                   "error": {
@@ -669,7 +670,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:17.103Z",
+                  "startTime": "2025-09-14T14:39:45.411Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -698,7 +699,7 @@
                   "workerIndex": 11,
                   "parallelIndex": 2,
                   "status": "failed",
-                  "duration": 326,
+                  "duration": 1099,
                   "error": {
                     "message": "Error: browserContext.newPage: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
                     "stack": "Error: browserContext.newPage: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
@@ -711,7 +712,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:17.125Z",
+                  "startTime": "2025-09-14T14:39:45.413Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -740,7 +741,7 @@
                   "workerIndex": 13,
                   "parallelIndex": 3,
                   "status": "failed",
-                  "duration": 390,
+                  "duration": 680,
                   "error": {
                     "message": "Error: browserContext.newPage: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
                     "stack": "Error: browserContext.newPage: Executable doesn't exist at /Users/hewei/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
@@ -753,7 +754,7 @@
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-14T14:20:17.410Z",
+                  "startTime": "2025-09-14T14:39:45.861Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -771,8 +772,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-09-14T14:20:15.664Z",
-    "duration": 7596.172,
+    "startTime": "2025-09-14T14:39:43.783Z",
+    "duration": 4662.3279999999995,
     "expected": 0,
     "skipped": 0,
     "unexpected": 14,

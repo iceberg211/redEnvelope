@@ -20,8 +20,9 @@ export default defineConfig({
   
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ['html', { outputFolder: 'test-results/playwright-report' }],
-    ['json', { outputFile: 'test-results/playwright-results.json' }],
+    // 避免与 outputDir 冲突：HTML 报告输出到根目录下的 playwright-report
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }],
     ['list'],
   ],
   
@@ -95,5 +96,6 @@ export default defineConfig({
   },
 
   /* Output directory for test artifacts */
-  outputDir: 'test-results/',
+  // 与 HTML 报告目录解耦，避免清理冲突
+  outputDir: 'test-results/artifacts',
 });
