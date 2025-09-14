@@ -92,13 +92,65 @@ function getLanguage(filename) {
   return map[ext] || 'text';
 }
 
-function getChangedFiles() {
+function sh(cmd, opts = {}) {
+  return execSync(cmd, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
+}
+
+function getDefaultBranch() {
   try {
-    let output = execSync('git diff --cached --name-only', { encoding: 'utf8' });
-    if (!output.trim()) {
-      output = execSync('git diff --name-only origin/main...HEAD', { encoding: 'utf8' });
+    const out = sh('git remote show origin');
+    const m = out.match(/HEAD branch:\s*(\S+)/);
+    return m ? m[1] : 'main';
+  } catch {
+    return 'main';
+  }
+}
+
+function getChangedFiles() {
+  const isCI = !!process.env.CI;
+  const event = process.env.GITHUB_EVENT_NAME || '';
+  const baseRef = process.env.GITHUB_BASE_REF || '';
+  const headRef = process.env.GITHUB_HEAD_REF || '';
+
+  try {
+    // Ensure we have all refs available
+    try { sh('git fetch --no-tags --prune --depth=0 origin +refs/heads/*:refs/remotes/origin/*'); } catch {}
+
+    let diffCmd = '';
+    if (event === 'pull_request' && baseRef) {
+      // PR: compare merge-base of baseRef and HEAD
+      diffCmd = `git diff --name-only --diff-filter=ACMR origin/${baseRef}...HEAD`;
+    } else if (event === 'push') {
+      // Push: compare previous commit and current
+      try {
+        const prev = sh('git rev-parse HEAD^').trim();
+        diffCmd = `git diff --name-only --diff-filter=ACMR ${prev}..HEAD`;
+      } catch {
+        // Fallback to default branch three-dot
+        const def = getDefaultBranch();
+        diffCmd = `git diff --name-only --diff-filter=ACMR origin/${def}...HEAD`;
+      }
+    } else {
+      // Local run or unknown event: diff against default branch
+      const def = getDefaultBranch();
+      diffCmd = `git diff --name-only --diff-filter=ACMR origin/${def}...HEAD`;
     }
-    return output.trim().split('\n').filter(f => f.length > 0);
+
+    const output = sh(diffCmd);
+    const files = output
+      .trim()
+      .split('\n')
+      .map((s) => s.trim())
+      .filter((f) => f.length > 0);
+
+    if (files.length === 0) {
+      // Last resort: changed files in HEAD commit
+      try {
+        const fallback = sh('git diff-tree --no-commit-id --name-only -r HEAD');
+        return fallback.trim().split('\n').filter((f) => f.length > 0);
+      } catch {}
+    }
+    return files;
   } catch (error) {
     console.error('获取变更文件失败:', error.message);
     return [];
@@ -112,8 +164,10 @@ function shouldReview(filepath) {
 
 async function main() {
   console.log(`🤖 开始AI代码审查... (使用模型: ${MODEL})`);
-
   const files = getChangedFiles().filter(shouldReview);
+  if (process.env.GITHUB_EVENT_NAME) {
+    console.log(`📦 事件: ${process.env.GITHUB_EVENT_NAME}, base: ${process.env.GITHUB_BASE_REF || '-'}, head: ${process.env.GITHUB_HEAD_REF || '-'}`);
+  }
 
   if (files.length === 0) {
     console.log('✅ 没有需要审查的文件');
