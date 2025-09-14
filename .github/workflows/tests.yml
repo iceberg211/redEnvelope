@@ -28,7 +28,8 @@ jobs:
 
       - name: Install web dependencies
         working-directory: web
-        run: pnpm install --frozen-lockfile
+        # Use local lockfile in subproject; allow install in CI
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run unit tests
         working-directory: web

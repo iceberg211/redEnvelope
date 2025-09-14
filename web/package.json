@@ -7,7 +7,6 @@
     "build": "webpack --config webpack.config.js --mode production",
     "build:analyze": "ANALYZE=true webpack --config webpack.config.js --mode production",
     "preview": "pnpm build && npx serve dist -s",
-    "preview:ci": "serve dist -s -l 5173",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit",
@@ -38,7 +37,6 @@
     "wagmi": "^2.16.8"
   },
   "devDependencies": {
-    "serve": "^14.2.5",
     "copy-webpack-plugin": "^12.0.2",
     "@eslint/js": "^9.33.0",
     "@playwright/test": "^1.46.0",
