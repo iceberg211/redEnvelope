@@ -96,7 +96,8 @@ module.exports = merge(baseConfig, {
       publicPath: '/',
     },
     historyApiFallback: true,
-    open: true,
+    // CI 环境下不自动打开浏览器，避免无头环境异常
+    open: process.env.CI ? false : true,
     hot: true,
     liveReload: true,
     compress: true,

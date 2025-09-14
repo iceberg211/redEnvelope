@@ -1,43 +1,56 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach } from '@jest/globals';
 import { useCreateRedPacket, useHasClaimed } from '@/features/redpacket/hooks';
 
-// Fake viem helpers are not used directly here; hooks call the mocked clients.
-
-// Mocks for wagmi hooks returning clients used by our hooks
+// IMPORTANT: mock before importing hooks to ensure correct injection
 const fakePublicClient: any = {
-  simulateContract: vi.fn(async () => ({ result: 123n, request: { foo: 'bar' } })),
-  waitForTransactionReceipt: vi.fn(async () => ({ status: 'success' })),
-  readContract: vi.fn(async () => true),
-  watchContractEvent: vi.fn(() => () => {}),
+  simulateContract: jest.fn(async () => ({ result: 123n, request: { foo: 'bar' } })),
+  waitForTransactionReceipt: jest.fn(async () => ({ status: 'success' })),
+  readContract: jest.fn(async () => true),
+  watchContractEvent: jest.fn(() => () => {}),
 };
 const fakeWalletClient: any = {
   account: '0x0000000000000000000000000000000000000000',
-  writeContract: vi.fn(async () => '0xhash'),
+  writeContract: jest.fn(async () => '0xhash'),
 };
 
-vi.mock('wagmi', async () => {
+jest.mock('wagmi', () => {
   return {
     usePublicClient: () => fakePublicClient,
     useWalletClient: () => ({ data: fakeWalletClient }),
-    useAccount: () => ({ chainId: 1, address: '0x0000000000000000000000000000000000000000' }),
+    useAccount: () => ({
+      chainId: 11155111,
+      address: '0x0000000000000000000000000000000000000000',
+    }),
   } as any;
 });
 
+
+
 describe('redpacket hooks', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it('useCreateRedPacket creates and sets lastCreatedId', async () => {
+    // 明确设置返回值，避免潜在的 mock 覆盖
+    fakePublicClient.simulateContract.mockResolvedValue({
+      result: 123n,
+      request: { foo: 'bar' },
+    } as any);
+    fakeWalletClient.writeContract.mockResolvedValue('0xhash' as any);
+    fakePublicClient.waitForTransactionReceipt.mockResolvedValue({ status: 'success' } as any);
+
     function Test() {
-      const { create, loading, lastCreatedId } = useCreateRedPacket(1);
+      const { create, loading, lastCreatedId } = useCreateRedPacket(11155111);
       return (
         <div>
-          <button onClick={() => create('0.10', 3)} disabled={loading}>create</button>
+          <button onClick={() => create('0.10', 3)} disabled={loading}>
+            create
+          </button>
           {lastCreatedId != null && (
-            <span data-testid="created-id">{lastCreatedId.toString()}</span>
+            <span data-testid='created-id'>{lastCreatedId.toString()}</span>
           )}
         </div>
       );
@@ -56,9 +69,10 @@ describe('redpacket hooks', () => {
   });
 
   it('useHasClaimed reads and returns true', async () => {
+    fakePublicClient.readContract.mockResolvedValue(true as any);
     function Test() {
-      const has = useHasClaimed(1, 1, '0x0000000000000000000000000000000000000000');
-      return <span data-testid="has">{String(has)}</span>;
+      const has = useHasClaimed(1, 11155111, '0x0000000000000000000000000000000000000000');
+      return <span data-testid='has'>{String(has)}</span>;
     }
 
     render(<Test />);
@@ -68,4 +82,3 @@ describe('redpacket hooks', () => {
     expect(fakePublicClient.readContract).toHaveBeenCalled();
   });
 });
-

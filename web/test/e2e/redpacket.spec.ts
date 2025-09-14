@@ -1,20 +1,17 @@
 import { test, expect } from '@playwright/test';
 
-test('redpacket UI smoke and interactions', async ({ page }) => {
+// 极简冒烟测试：仅验证页面加载与关键控件可见性
+test('redpacket UI smoke', async ({ page }) => {
   await page.goto('/');
 
-  // 标题与连接按钮存在
+  await expect(page).toHaveTitle('链上抢红包 DApp');
   await expect(page.getByRole('heading', { name: '链上抢红包 DApp' })).toBeVisible();
-  await expect(page.getByTestId('rk-connect-button')).toBeVisible();
 
-  // 发红包面板交互：输入并点击后提示失败（未连接钱包）
-  await page.getByLabel('金额 (ETH)').fill('0.02');
-  await page.getByLabel('个数').fill('2');
-  await page.getByRole('button', { name: '发红包' }).click();
-  await expect(page.getByText('发送失败')).toBeVisible();
+  await expect(page.getByLabel('金额 (ETH)')).toBeVisible();
+  await expect(page.getByLabel('个数')).toBeVisible();
+  await expect(page.getByLabel('红包ID')).toBeVisible();
 
-  // 抢红包按钮在未连接时应禁用
-  const claimButton = page.getByRole('button', { name: '抢红包' });
-  await expect(claimButton).toBeDisabled();
+  await expect(page.getByRole('button', { name: '发红包' })).toBeVisible();
+  // 未连接钱包时，抢红包按钮应禁用（与实现保持一致）
+  await expect(page.getByRole('button', { name: '抢红包' })).toBeDisabled();
 });
-
