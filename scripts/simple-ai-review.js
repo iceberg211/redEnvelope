@@ -4,6 +4,17 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Polyfill fetch for Node.js < 18
+if (!globalThis.fetch) {
+  try {
+    const { fetch } = require('node-fetch');
+    globalThis.fetch = fetch;
+  } catch (e) {
+    console.error('❌ fetch不可用，请安装node-fetch: npm install node-fetch');
+    process.exit(1);
+  }
+}
+
 const API_ENDPOINT = 'https://weihe.life/aichat/graphql';
 
 async function reviewCode(code, filename = '') {
