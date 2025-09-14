@@ -1,0 +1,29 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  ai-review:
+    name: DeepSeek AI Code Review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 需要完整历史来分析变更
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run DeepSeek AI Code Review
+        env:
+          # 默认使用 deepseek-chat，可选切换为 deepseek-reasoner
+          DEEPSEEK_MODEL: "deepseek-chat"
+          # DEEPSEEK_MODEL: "deepseek-reasoner"  # R1推理模型 (更深入分析)
+        run: |
+          echo "🤖 开始DeepSeek AI代码审查..."
+          node scripts/simple-ai-review.js

@@ -17,6 +17,9 @@ if (!globalThis.fetch) {
 
 const API_ENDPOINT = 'https://weihe.life/aichat/graphql';
 
+// 支持通过环境变量选择模型
+const MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat'; // 或 'deepseek-reasoner'
+
 async function reviewCode(code, filename = '') {
   const language = getLanguage(filename);
 
@@ -30,6 +33,11 @@ async function reviewCode(code, filename = '') {
           title
           description
           suggestion
+          location {
+            path
+            lineStart
+            lineEnd
+          }
         }
       }
     }
@@ -37,14 +45,13 @@ async function reviewCode(code, filename = '') {
 
   const variables = {
     input: {
-      provider: "OPENAI",
-      model: "gpt-4o-mini",
+      provider: "DEEPSEEK",
+      model: MODEL,
       filename: filename,
       language: language,
       goals: ["Correctness", "Security", "Readability"],
       code: code,
-      temperature: 0.3,
-      maxTokens: 2000,
+      temperature: 0,
       guidelines: "Focus on Web3 security and TypeScript best practices"
     }
   };
@@ -104,7 +111,7 @@ function shouldReview(filepath) {
 }
 
 async function main() {
-  console.log('🤖 开始AI代码审查...');
+  console.log(`🤖 开始AI代码审查... (使用模型: ${MODEL})`);
 
   const files = getChangedFiles().filter(shouldReview);
 
@@ -143,6 +150,14 @@ async function main() {
           console.log(`     ${i+1}. ${icon} ${issue.title}`);
           if (issue.description) console.log(`        ${issue.description}`);
           if (issue.suggestion) console.log(`        💡 ${issue.suggestion}`);
+
+          // 显示位置信息
+          if (issue.location && issue.location.lineStart) {
+            const lineInfo = issue.location.lineEnd && issue.location.lineEnd !== issue.location.lineStart
+              ? `第${issue.location.lineStart}-${issue.location.lineEnd}行`
+              : `第${issue.location.lineStart}行`;
+            console.log(`        📍 位置: ${lineInfo}`);
+          }
 
           if (issue.severity === 'ERROR') hasErrors = true;
         });

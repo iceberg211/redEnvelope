@@ -40,6 +40,14 @@ export default defineConfig({
     /* Record video on failure */
     video: 'retain-on-failure',
   },
+  /* Configure web server for E2E tests */
+  webServer: {
+    command: 'npx serve dist -s -l 5173',
+    port: 5174,
+    reuseExistingServer: !process.env.CI,
+    stdout: 'ignore',
+    stderr: 'pipe',
+  },
 
   /* Configure projects for major browsers */
   projects: [
@@ -78,14 +86,6 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
   ],
-
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000, // 2 minutes
-  },
 
   /* Test timeout */
   timeout: 30 * 1000, // 30 seconds
