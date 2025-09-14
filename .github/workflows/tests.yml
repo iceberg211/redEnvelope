@@ -1,0 +1,61 @@
+name: Web Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    name: Web Tests (Unit + E2E)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: 'web/pnpm-lock.yaml'
+
+      - name: Install web dependencies
+        working-directory: web
+        run: pnpm install --frozen-lockfile
+
+      - name: Run unit tests
+        working-directory: web
+        run: pnpm test
+
+      - name: Build for E2E tests
+        working-directory: web
+        run: pnpm build
+
+      - name: Install Playwright Chromium
+        working-directory: web
+        run: npx playwright install chromium
+
+      - name: Start preview server
+        working-directory: web
+        run: npx serve dist -s -l 5173 &
+
+      - name: Wait for server
+        run: sleep 10
+
+      - name: Run E2E tests (Chromium only)
+        working-directory: web
+        run: pnpm test:e2e:chromium
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: web/test-results/playwright-report
