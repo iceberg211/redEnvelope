@@ -1,5 +1,16 @@
 import { test, expect } from '@playwright/test';
 
+test.beforeEach(async ({ page }) => {
+  page.on('console', (msg) => {
+    // eslint-disable-next-line no-console
+    console.log(`[browser:${msg.type()}]`, msg.text());
+  });
+  page.on('pageerror', (err) => {
+    // eslint-disable-next-line no-console
+    console.error('[pageerror]', err);
+  });
+});
+
 // 极简冒烟测试：仅验证页面加载与关键控件可见性
 test('redpacket UI smoke', async ({ page }) => {
   await page.goto('/');

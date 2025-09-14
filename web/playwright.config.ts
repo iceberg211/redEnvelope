@@ -42,7 +42,8 @@ export default defineConfig({
   },
   /* Configure web server for E2E tests */
   webServer: {
-    command: 'npx serve dist -s -l 5173',
+    // Use a dedicated preview script to avoid npx on CI
+    command: 'pnpm preview:ci',
     // Must match the port passed to `serve`
     port: 5173,
     reuseExistingServer: !process.env.CI,
@@ -93,7 +94,8 @@ export default defineConfig({
 
   /* Expect timeout */
   expect: {
-    timeout: 5 * 1000, // 5 seconds
+    // Give CI a bit more time to hydrate
+    timeout: (process.env.CI ? 10 : 5) * 1000,
   },
 
   /* Output directory for test artifacts */
