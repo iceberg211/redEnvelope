@@ -43,7 +43,8 @@ export default defineConfig({
   /* Configure web server for E2E tests */
   webServer: {
     command: 'npx serve dist -s -l 5173',
-    port: 5174,
+    // Must match the port passed to `serve`
+    port: 5173,
     reuseExistingServer: !process.env.CI,
     stdout: 'ignore',
     stderr: 'pipe',

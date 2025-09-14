@@ -1,8 +1,14 @@
 name: AI Code Review
 
 on:
+  # Run on PRs to any branch
   pull_request:
-    branches: [ main, master ]
+    branches: [ "**" ]
+  # Also run on pushes (e.g., feature branches)
+  push:
+    branches: [ "**" ]
+  # Allow manual runs from the Actions tab
+  workflow_dispatch:
 
 jobs:
   ai-review:
