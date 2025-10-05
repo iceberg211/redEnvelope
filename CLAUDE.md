@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-此文件为 Claude Code (claude.ai/code) 在该仓库中工作时提供指导。
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## 项目概述
 
@@ -12,9 +12,10 @@
 
 ### Monorepo 结构
 - `contracts/` - 使用 Hardhat 的 Solidity 智能合约
-- `web/` - 使用 Vite + TypeScript 的 React 前端
-- `scripts/` - 环境同步和 ABI 同步的工具脚本
+- `web/` - 使用 Webpack 5 + TypeScript 的 React 前端
+- `scripts/` - 环境同步、ABI 同步和 AI 代码审查的工具脚本
 - 根目录 package.json 管理工作空间命令
+- `.github/workflows/` - GitHub Actions CI/CD 配置
 
 ### 智能合约 (`contracts/`)
 - **RedPacket.sol** - 主合约，包含创建/领取红包功能
@@ -65,6 +66,7 @@ pnpm dev:web              # 启动 Webpack 开发服务器
 pnpm build:web            # 构建生产版本
 pnpm build:web:analyze    # 构建并生成包分析报告
 pnpm preview:web          # 预览生产构建
+pnpm preview:web:ci       # CI 环境预览（端口 5173）
 ```
 
 ### 前端代码检查和类型检查
@@ -80,8 +82,11 @@ pnpm test:web             # 运行 Jest 单元测试
 pnpm test:web:watch       # 监视模式运行测试
 pnpm test:web:coverage    # 运行测试并生成覆盖率报告
 pnpm test:e2e             # 运行 Playwright E2E 测试
+pnpm test:e2e:chromium    # 仅运行 Chromium 浏览器测试
 pnpm test:e2e:ui          # 运行 E2E 测试（UI 模式）
 pnpm test:e2e:debug       # 调试 E2E 测试
+pnpm test:e2e:install     # 安装 Playwright 浏览器
+pnpm test:e2e:install:chromium  # 仅安装 Chromium
 pnpm test:all             # 运行所有测试（合约+前端）
 ```
 
@@ -141,15 +146,37 @@ pnpm ai-review            # 审查当前变更的文件
 - 部署脚本自动更新前端合约地址
 
 ### AI 代码审查
-- **工具脚本**: `scripts/simple-ai-review.js` - 调用 AI 接口进行代码审查
+- **工具脚本**: `scripts/simple-ai-review.js` - 调用 DeepSeek AI 接口进行代码审查
 - **API 地址**: `https://weihe.life/aichat/graphql`
 - **使用方式**: `pnpm ai-review` 手动触发审查
-- **CI 集成**: GitHub Actions 在 PR 时自动运行
+- **CI 集成**: GitHub Actions 自动运行（.github/workflows/ai-code-review.yml）
+  - 在所有 PR 和 push 事件时触发
+  - 使用 deepseek-chat 模型（可切换为 deepseek-reasoner）
+  - 可通过 Actions 面板手动触发
 
 ## 测试
 
-合约测试使用 Hardhat 和 ethers.js。前端依赖在 Sepolia 测试网上的手动测试和钱包集成。
+- **合约测试**: Hardhat + ethers.js (位于 `contracts/test/`)
+- **前端单元测试**: Jest + React Testing Library (位于 `web/test/unit/`)
+- **E2E 测试**: Playwright (位于 `web/test/e2e/`)
+  - 测试配置: `web/playwright.config.ts`
+  - 测试结果: `web/test-results/`
+- **CI 测试**: GitHub Actions 自动运行所有测试 (.github/workflows/tests.yml)
 
 ## 网络配置
 
 主要针对 Sepolia 测试网（链ID: 11155111）。前端通过主网 RPC 支持 ENS 解析用于地址显示。
+
+## CI/CD 工作流
+
+项目包含两个 GitHub Actions 工作流：
+
+1. **tests.yml** - 自动化测试
+   - 在 PR 和 push 时运行
+   - 执行合约测试、前端单元测试和 E2E 测试
+   - 生成测试报告
+
+2. **ai-code-review.yml** - AI 代码审查
+   - 在 PR 和 push 时运行
+   - 使用 DeepSeek AI 分析代码变更
+   - 可手动触发
